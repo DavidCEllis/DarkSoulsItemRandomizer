@@ -1,14 +1,6 @@
 import struct
 
-from .binary_tools import consume_byte
-
-
-def extract_strz(content, offset):
-    extracted = b""
-    while content[offset : offset + 1] != b"\x00":
-        extracted = extracted + content[offset : offset + 1]
-        offset += 1
-    return extracted.decode("utf-8")
+from .binary_tools import consume_byte, extract_strz
 
 
 def appears_bnd(content):
