@@ -7,8 +7,6 @@ import os
 import datetime
 import shutil
 import webbrowser
-import requests
-from distutils.version import LooseVersion
 
 import randomizer_options as rngopts
 import randomize_item_table
@@ -19,8 +17,6 @@ import logging
 log = logging.getLogger(__name__)
 
 MAX_SEED_LENGTH = 64
-
-VERSION_NUM = "0.3"
 
 PTDE_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd", "./param/GameParam/GameParam.parambnd"]
 DS1R_GAMEPARAM_PATH_LIST = ["./GameParam.parambnd.dcx", "./param/GameParam/GameParam.parambnd.dcx"]
@@ -99,11 +95,13 @@ class DescriptionState():
 
 class MainGUI:
     def __init__(self):
+        from . import __version__
+
         self.seed_rng = random.Random()
         self.has_hovered_desc = False
         self.root = tk.Tk()
         self.style = ttk.Style()
-        self.root.title("Dark Souls Item Randomizer v" + VERSION_NUM)
+        self.root.title(f"Dark Souls Item Randomizer v{__version__}")
         self.root.resizable(False, False)
         img = tk.PhotoImage(file=resource_path('favicon.gif'))
         self.root.call('wm', 'iconphoto', self.root._w, img)
@@ -691,32 +689,10 @@ class MainGUI:
         return state
         
     def check_for_new_version(self):
-        CHECK_VERSION_URL = r'https://raw.githubusercontent.com/HotPocketRemix/DarkSoulsItemRandomizer/master/version.txt'
-        try:
-            r = requests.get(CHECK_VERSION_URL, timeout=2)
-            if r.status_code == requests.codes.ok:
-                page_content = r.content
-                page_version_num = page_content.split(b'\n')[0].strip().decode('utf-8')
-                if LooseVersion(page_version_num) > LooseVersion(VERSION_NUM):
-                    self.back_button.lower()
-                    self.msg_area.config(state="normal")
-                    self.msg_area.delete(1.0, "end")
-                    self.msg_area.insert("end", "\n\n")
-                    self.msg_area.insert("end", "ATTENTION", "error_red")
-                    self.msg_area.insert("end", "! There is a new version of the Item Randomizer available.\n\n" +
-                    "It is recommended that you update to the newest version. Old versions\n" + 
-                    "will NOT be supported and may have bugs fixed in the latest release." +
-                    "\n\nClick \"Continue\" to use the current version anyway, or click \"Quit\" to exit.")
-                    self.msg_area.tag_config("error_red", foreground="red")
-                    self.msg_area.lift()
-                    self.msg_continue_button.lift()
-                    self.msg_quit_button.lift()
-        except:
-            pass
+        pass
 
 
-if __name__ == "__main__":
+def launch():
     logging.basicConfig(stream=sys.stdout, level=logging.WARN)
     maingui = MainGUI()
     maingui.root.mainloop()
-    

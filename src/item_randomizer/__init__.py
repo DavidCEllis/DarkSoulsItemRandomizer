@@ -1,1 +1,3 @@
-__version__ = "v0.4.0"
+__version__ = "0.4"
+
+from .randomizer_gui import launch
