@@ -1,0 +1,30 @@
+[build-system]
+requires = [
+    "setuptools>=61.0",
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name="Dark Souls Item Randomizer"
+description="Item Randomizer for Dark Souls PTDE and Remaster"
+authors = [
+    { name="HotPocketRemix"},
+    { name="Ducksual" },
+]
+readme="README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+]
+dynamic = ['version']
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+version = {attr = "item_randomizer.__version__"}
+
+[project.optional-dependencies]
+testing = ["pytest", "pytest-cov"]
+build = ["cx-freeze", "pywin32"]

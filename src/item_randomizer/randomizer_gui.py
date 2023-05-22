@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from tkinter import messagebox as tkMB
 import random
 import hashlib
 import sys
@@ -13,8 +12,8 @@ from distutils.version import LooseVersion
 
 import randomizer_options as rngopts
 import randomize_item_table
-import bnd_rebuilder
-import dcx_handler
+
+from .binary_handlers import bnd_rebuilder, dcx_handler
 
 import logging
 log = logging.getLogger(__name__)
