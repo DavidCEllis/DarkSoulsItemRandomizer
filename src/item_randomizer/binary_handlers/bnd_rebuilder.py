@@ -1,6 +1,6 @@
 import struct
 
-from .util import consume_byte
+from .binary_tools import consume_byte
 
 
 def extract_strz(content, offset):

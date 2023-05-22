@@ -3,7 +3,7 @@ import zlib
 import sys
 import os
 
-from .util import consume_byte
+from .binary_tools import consume_byte
 
 
 def appears_dcx(content):

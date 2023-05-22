@@ -2,12 +2,7 @@ import struct
 import sys
 
 
-def extract_shift_jisz(content, offset):
-    extracted = b""
-    while content[offset : offset + 1] != b"\x00":
-        extracted = extracted + content[offset : offset + 1]
-        offset += 1
-    return extracted.decode("shift-jis")
+from .binary_handlers.binary_tools import extract_shift_jisz
 
 
 class ChrInit:
