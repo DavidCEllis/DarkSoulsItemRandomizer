@@ -359,7 +359,10 @@ def transmute_itemlotpart_to_boss_item(itemlotpart, random_source):
     return itemlotpart
 
 
-def place_ignored_items(table, item_list):
+def place_ignored_items(
+        table: item_t.ItemTable,
+        item_list
+):
     log.info("Placing ignored items.")
     for loc_id in table.location_dict:
         loc = table.location_dict[loc_id]
@@ -377,7 +380,11 @@ def place_ignored_items(table, item_list):
             table.place_itemlotpart_at_location(item_list[loc_id], loc_id, item_list)
 
 
-def place_upgrade_items(table, random_source, item_list):
+def place_upgrade_items(
+        table: item_t.ItemTable,
+        random_source,
+        item_list
+):
     log.info("Placing upgrade items.")
     for loc_id in table.location_dict:
         loc = table.location_dict[loc_id]
@@ -396,7 +403,10 @@ def place_upgrade_items(table, random_source, item_list):
 
 
 def place_key_item_in_vanilla_location(
-    table, key_name, current_key_locations, item_list
+        table: item_t.ItemTable,
+        key_name,
+        current_key_locations,
+        item_list
 ):
     key_loc_ids = [
         loc_id
@@ -409,7 +419,12 @@ def place_key_item_in_vanilla_location(
     table.place_itemlotpart_at_location(key_item, first_key_loc_id, item_list)
 
 
-def place_key_items(table, rand_options, random_source, item_list):
+def place_key_items(
+        table: item_t.ItemTable,
+        rand_options,
+        random_source,
+        item_list
+):
     log.info("Placing key items.")
     current_key_locations = {}
     if rand_options.key_placement == rng_opt.RandOptKeyDifficulty.LEAVE_ALONE:
@@ -572,7 +587,12 @@ def get_price_for_difficulty(diff, itemlotpart, random_source):
         return random_source.choice(possible_prices)
 
 
-def place_non_key_fixed_items(table, rand_options, random_source, item_list):
+def place_non_key_fixed_items(
+        table: item_t.ItemTable,
+        rand_options,
+        random_source,
+        item_list
+):
     log.info("Placing non-key fixed items.")
     item_ids_to_place = [
         item_id
@@ -699,7 +719,11 @@ def place_non_key_fixed_items(table, rand_options, random_source, item_list):
             )
 
 
-def place_starting_equipment(table, data_passed_from_chr_init, item_list):
+def place_starting_equipment(
+        table: item_t.ItemTable,
+        data_passed_from_chr_init,
+        item_list
+):
     log.info("Placing starting equipment.")
     for start_class in loc_s.STARTING_ITEM_TABLE:
         for lot_type in ["left_hand", "right_hand", "extra"]:
@@ -715,7 +739,11 @@ def place_starting_equipment(table, data_passed_from_chr_init, item_list):
                     )
 
 
-def build_table(rand_options, random_source, chr_init_data):
+def build_table(
+        rand_options,
+        random_source,
+        chr_init_data
+) -> tuple[item_t.ItemTable, cip.ChrInitParam]:
     # Create a deep copy of the list of items to be modified for this table.
     item_list = copy.deepcopy(item_s.ITEMS)
 

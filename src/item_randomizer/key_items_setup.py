@@ -53,13 +53,20 @@ ADDITIONAL_SPEEDRUN_KEYS = ["purple_cowards_crystal"]
 
 
 def key_placed(key_name, current_key_locations):
+    """
+    Return true if key_name is in current locations and not equal
+    to 'to_place' or 'cannot_place'
+    """
     if key_name not in current_key_locations:
         return False
     key_status = current_key_locations[key_name]
     return not (key_status == "to_place" or key_status == "cannot_place")
 
 
-def check_key_locations_are_valid(current_key_locations, rand_options):
+def check_key_locations_are_valid(
+        current_key_locations,
+        rand_options,
+):
     speedrun = rand_options.key_placement == rng_opt.RandOptKeyDifficulty.SPEEDRUN_MODE
     connection_dict = get_connections(rand_options)
 
@@ -72,6 +79,7 @@ def check_key_locations_are_valid(current_key_locations, rand_options):
         for new_key in current_key_locations:
             if current_key_locations[new_key].area == AREA.DUKES_PRISON:
                 current_keys.add(new_key)
+
         has_changed = True
         while has_changed and AREA.DUKES_ARCHIVES not in current_areas:
             has_changed = False
