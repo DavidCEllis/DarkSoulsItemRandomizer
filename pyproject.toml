@@ -29,3 +29,7 @@ version = {attr = "item_randomizer.__version__"}
 testing = ["pytest", "pytest-cov"]
 dev = ["black"]
 build = ["cx-freeze", "pywin32"]
+
+[tool.black]
+line-length = 88
+target-version = ['py311']
