@@ -1,5 +1,5 @@
-import items_setup as item_s
-import locations_setup as loc_s
+from . import items_setup as item_s
+from . import locations_setup as loc_s
 
 # qwc_id should match the count of the shop item (including -1 for items
 #  that can be infinitely purchased), so it is not included here.

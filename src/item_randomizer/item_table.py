@@ -1,14 +1,15 @@
-import logging
-log = logging.getLogger(__name__)
-
-import items_setup as item_s
-import locations_setup as loc_s
-import item_lot_formatter
-
-import item_lot_param as ilp
-import shop_lineup_param as slp
-
 import itertools
+import logging
+
+from . import items_setup as item_s
+from . import locations_setup as loc_s
+from . import item_lot_formatter
+
+from . import item_lot_param as ilp
+from . import shop_lineup_param as slp
+
+
+log = logging.getLogger(__name__)
 
 class ItemTable:
     def __init__(self, location_dict = None, shop_dict = None):

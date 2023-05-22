@@ -4,8 +4,8 @@ log = logging.getLogger(__name__)
 from ordered_set import OrderedSet
 import copy
 
-from locations_setup import AREA
-import randomizer_options as rng_opt
+from .locations_setup import AREA
+from . import randomizer_options as rng_opt
 
 KEY_NAMES = ["lordvessel", "key_to_the_seal", "blighttown_key",
  "key_to_depths", "covenant_of_artorias", "rite_of_kindling",

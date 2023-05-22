@@ -8,9 +8,8 @@ import datetime
 import shutil
 import webbrowser
 
-import randomizer_options as rngopts
-import randomize_item_table
-
+from . import randomizer_options as rngopts
+from . import randomize_item_table
 from .binary_handlers import bnd_rebuilder, dcx_handler
 
 import logging

@@ -1,14 +1,14 @@
 import logging
 log = logging.getLogger(__name__)
 
-import randomizer_options as rng_opt
-import key_items_setup as key_items_s
-import items_setup as item_s
-import locations_setup as loc_s
-import shops_setup as shop_s
-import item_table as item_t
-import chr_setup as chr_s
-import chr_init_param as cip
+from . import randomizer_options as rng_opt
+from . import key_items_setup as key_items_s
+from . import items_setup as item_s
+from . import locations_setup as loc_s
+from . import shops_setup as shop_s
+from . import item_table as item_t
+from . import chr_setup as chr_s
+from . import chr_init_param as cip
 
 import copy
 
