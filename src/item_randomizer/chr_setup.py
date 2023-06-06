@@ -5,253 +5,173 @@ log = logging.getLogger(__name__)
 import random
 from enum import Enum
 import math
+from dataclasses import dataclass, field as dc_field
+from typing import ClassVar
 
 from . import chr_init_param as cip
 from . import randomizer_options as rng_opt
 from . import items_setup as item_s
 
 
+@dataclass
 class ChrInitStats:
-    def __init__(
-        self, soul_level, vita, attu, ende, stre, dext, inte, fith, luck, humn, resi
-    ):
-        self.soul_level = soul_level
-        self.vita = vita
-        self.attu = attu
-        self.ende = ende
-        self.stre = stre
-        self.dext = dext
-        self.inte = inte
-        self.fith = fith
-        self.luck = luck
-        self.humn = humn
-        self.resi = resi
+    soul_level: int
+    vita: int
+    attu: int
+    ende: int
+    stre: int
+    dext: int
+    inte: int
+    fith: int
+    luck: int
+    humn: int
+    resi: int
 
-
+@dataclass
 class ChrInitWeapons:
-    def __init__(self, right_primary, right_secondary, left_primary, left_secondary):
-        self.right_primary = right_primary
-        self.right_secondary = right_secondary
-        self.left_primary = left_primary
-        self.left_secondary = left_secondary
+    right_primary: int
+    right_secondary: int
+    left_primary: int
+    left_secondary: int
 
 
+@dataclass
 class ChrInitArmor:
-    def __init__(self, head, chest, hand, legs):
-        self.head = head
-        self.chest = chest
-        self.hand = hand
-        self.legs = legs
+    head: int
+    chest: int
+    hand: int
+    legs: int
 
 
+@dataclass
 class ChrInitArrows:
-    def __init__(
-        self,
-        arrow_primary,
-        arrow_primary_count,
-        arrow_secondary,
-        arrow_secondary_count,
-        bolt_primary,
-        bolt_primary_count,
-        bolt_secondary,
-        bolt_secondary_count,
-    ):
-        self.arrow_primary = arrow_primary
-        self.arrow_primary_count = arrow_primary_count
-        self.arrow_secondary = arrow_secondary
-        self.arrow_secondary_count = arrow_secondary_count
-        self.bolt_primary = bolt_primary
-        self.bolt_primary_count = bolt_primary_count
-        self.bolt_secondary = bolt_secondary
-        self.bolt_secondary_count = bolt_secondary_count
+    arrow_primary: int = -1
+    arrow_primary_count: int = 0
+    arrow_secondary: int = -1
+    arrow_secondary_count: int = 0
+    bolt_primary: int = -1
+    bolt_primary_count: int = 0
+    bolt_secondary: int = -1
+    bolt_secondary_count: int = 0
 
 
+@dataclass
 class ChrInitRings:
-    def __init__(self, ring1=-1, ring2=-1, ring3=-1, ring4=-1, ring5=-1):
-        self.ring1 = ring1
-        self.ring2 = ring2
-        self.ring3 = ring3
-        self.ring4 = ring4
-        self.ring5 = ring5
+    ring1: int = -1
+    ring2: int = -1
+    ring3: int = -1
+    ring4: int = -1
+    ring5: int = -1
 
 
+@dataclass
 class ChrInitSkills:
-    def __init__(self, skill1=-1, skill2=-1, skill3=-1):
-        self.skill1 = skill1
-        self.skill2 = skill2
-        self.skill3 = skill3
+    skill1: int = -1
+    skill2: int = -1
+    skill3: int = -1
 
 
+@dataclass
 class ChrInitSpells:
-    def __init__(
-        self,
-        spell1=-1,
-        spell2=-1,
-        spell3=-1,
-        spell4=-1,
-        spell5=-1,
-        spell6=-1,
-        spell7=-1,
-    ):
-        self.spell1 = spell1
-        self.spell2 = spell2
-        self.spell3 = spell3
-        self.spell4 = spell4
-        self.spell5 = spell5
-        self.spell6 = spell6
-        self.spell7 = spell7
+    spell1: int = -1
+    spell2: int = -1
+    spell3: int = -1
+    spell4: int = -1
+    spell5: int = -1
+    spell6: int = -1
+    spell7: int = -1
 
 
+@dataclass
 class ChrInitItems:
-    def __init__(
-        self,
-        item1=-1,
-        item1_count=0,
-        item2=-1,
-        item2_count=0,
-        item3=-1,
-        item3_count=0,
-        item4=-1,
-        item4_count=0,
-        item5=-1,
-        item5_count=0,
-        item6=-1,
-        item6_count=0,
-        item7=-1,
-        item7_count=0,
-        item8=-1,
-        item8_count=0,
-        item9=-1,
-        item9_count=0,
-        item10=-1,
-        item10_count=0,
-    ):
-        self.item1 = item1
-        self.item1_count = item1_count
-        self.item2 = item2
-        self.item2_count = item2_count
-        self.item3 = item3
-        self.item3_count = item3_count
-        self.item4 = item4
-        self.item4_count = item4_count
-        self.item5 = item5
-        self.item5_count = item5_count
-        self.item6 = item6
-        self.item6_count = item6_count
-        self.item7 = item7
-        self.item7_count = item7_count
-        self.item8 = item8
-        self.item8_count = item8_count
-        self.item9 = item9
-        self.item9_count = item9_count
-        self.item10 = item10
-        self.item10_count = item10_count
+    item1: int = -1
+    item1_count: int = 0
+    item2: int = -1
+    item2_count: int = 0
+    item3: int = -1
+    item3_count: int = 0
+    item4: int = -1
+    item4_count: int = 0
+    item5: int = -1
+    item5_count: int = 0
+    item6: int = -1
+    item6_count: int = 0
+    item7: int = -1
+    item7_count: int = 0
+    item8: int = -1
+    item8_count: int = 0
+    item9: int = -1
+    item9_count: int = 0
+    item10: int = -1
+    item10_count: int = 0
 
 
+@dataclass
 class ChrInitBodyScale:
-    def __init__(self, head_scale, chest_scale, ab_scale, arm_scale, leg_scale):
-        self.head_scale = head_scale
-        self.chest_scale = chest_scale
-        self.ab_scale = ab_scale
-        self.arm_scale = arm_scale
-        self.leg_scale = leg_scale
+    head_scale: int = 0
+    chest_scale: int = 0
+    ab_scale: int = 0
+    arm_scale: int = 0
+    leg_scale: int = 0
 
-
+@dataclass
 class ChrInitGestures:
-    def __init__(
-        self, gesture0, gesture1, gesture2, gesture3, gesture4, gesture5, gesture6
-    ):
-        self.gesture0 = gesture0
-        self.gesture1 = gesture1
-        self.gesture2 = gesture2
-        self.gesture3 = gesture3
-        self.gesture4 = gesture4
-        self.gesture5 = gesture5
-        self.gesture6 = gesture6
+    gesture0: int
+    gesture1: int
+    gesture2: int
+    gesture3: int
+    gesture4: int
+    gesture5: int
+    gesture6: int
 
 
+@dataclass
 class ChrInitEntry:
-    def __init__(
-        self,
-        stats,
-        weapons,
-        armor,
-        arrows,
-        rings,
-        skills,
-        spells,
-        items,
-        facegen_id,
-        think_id,
-        npc_type,
-        draw_type,
-        sex,
-        body_scale,
-        covenant,
-        gestures,
-        souls=0,
-        base_hp=0,
-        base_mp=0,
-        base_rec_mp=0,
-        base_sp=0,
-        base_rec_sp=0,
-        red_falldam=0,
-        qwc_sb=0,
-        qwc_mw=0,
-        qwc_cd=0,
-    ):
-        if arrows == None:
-            self.arrows = ChrInitArrows(-1, 0, -1, 0, -1, 0, -1, 0)
-        else:
-            self.arrows = arrows
+    stats: ChrInitStats
+    weapons: ChrInitWeapons
+    armor: ChrInitArmor
+    arrows: ChrInitArrows | None
+    rings: ChrInitRings | None
+    skills: ChrInitSkills | None
+    spells: ChrInitSpells | None
+    items: ChrInitItems | None
+    facegen_id: int
+    think_id: int
+    npc_type: int
+    draw_type: int
+    sex: int
+    body_scale: ChrInitBodyScale | None
+    covenant: int
+    gestures: ChrInitGestures
+    souls: int = 0
+    base_hp: int = 0
+    base_mp: int = 0
+    base_rec_mp: int = 0
+    base_sp: int = 0
+    base_rec_sp: int = 0
+    red_falldam: int = 0
+    qwc_sb: int = 0
+    qwc_mw: int = 0
+    qwc_cd: int = 0
 
-        if rings == None:
-            self.rings = ChrInitRings(-1, -1, -1, -1, -1)
-        else:
-            self.rings = rings
+    def __post_init__(self):
+        if self.arrows is None:
+            self.arrows = ChrInitArrows()
 
-        if skills == None:
-            self.skills = ChrInitSkills(-1, -1, -1)
-        else:
-            self.skills = skills
+        if self.rings is None:
+            self.rings = ChrInitRings()
 
-        if spells == None:
-            self.spells = ChrInitSpells(-1, -1, -1, -1, -1, -1, -1)
-        else:
-            self.spells = spells
+        if self.skills is None:
+            self.skills = ChrInitSkills()
 
-        if items == None:
-            self.items = ChrInitItems(
-                -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0
-            )
-        else:
-            self.items = items
+        if self.spells is None:
+            self.spells = ChrInitSpells()
 
-        if body_scale == None:
-            self.body_scale = ChrInitBodyScale(0, 0, 0, 0, 0)
-        else:
-            self.body_scale = body_scale
+        if self.items is None:
+            self.items = ChrInitItems()
 
-        self.stats = stats
-        self.weapons = weapons
-        self.armor = armor
-        self.base_hp = base_hp
-        self.base_mp = base_mp
-        self.base_rec_mp = base_rec_mp
-        self.base_sp = base_sp
-        self.base_rec_sp = base_rec_sp
-        self.red_falldam = red_falldam
-        self.qwc_sb = qwc_sb
-        self.qwc_mw = qwc_mw
-        self.qwc_cd = qwc_cd
-        self.facegen_id = facegen_id
-        self.think_id = think_id
-        self.npc_type = npc_type
-        self.draw_type = draw_type
-        self.sex = sex
-        self.covenant = covenant
-        self.gestures = gestures
-        self.souls = souls
+        if self.body_scale is None:
+            self.body_scale = ChrInitBodyScale()
 
     def to_chr_init(self, chr_init_id, description):
         return cip.ChrInit(
@@ -7106,40 +7026,23 @@ VANILLA_CHRS = {
 }
 
 
+@dataclass
 class CharacterArmorLinks:
-    def __init__(
-        self,
-        head_list,
-        chest_list,
-        arms_list,
-        legs_list,
-        is_npc=True,
-        has_hat=True,
-        special_hat=False,
-    ):
-        if head_list == None:
-            self.head_list = []
-        else:
-            self.head_list = head_list
+    head_list: list | None = dc_field(default_factory=list)
+    chest_list: list | None = dc_field(default_factory=list)
+    arms_list: list | None = dc_field(default_factory=list)
+    legs_list: list | None = dc_field(default_factory=list)
+    is_npc: bool = True
+    has_hat: bool = True
+    special_hat: bool = False
 
-        if chest_list == None:
-            self.chest_list = []
-        else:
-            self.chest_list = chest_list
-
-        if arms_list == None:
-            self.arms_list = []
-        else:
-            self.arms_list = arms_list
-
-        if legs_list == None:
-            self.legs_list = []
-        else:
-            self.legs_list = legs_list
-
-        self.is_npc = is_npc
-        self.has_hat = has_hat
-        self.special_hat = special_hat
+    def __post_init__(self):
+        # Dataclasses uses a special sentinel so passing None does not trigger
+        # default_factory
+        self.head_list = [] if self.head_list is None else self.head_list
+        self.chest_list = [] if self.chest_list is None else self.chest_list
+        self.arms_list = [] if self.arms_list is None else self.arms_list
+        self.legs_list = [] if self.legs_list is None else self.legs_list
 
     @classmethod
     def from_same_list(cls, same_list, is_npc=True, has_hat=True, special_hat=False):
@@ -7283,36 +7186,23 @@ CHR_ARMOR_LINKS = [
 ]
 
 
+@dataclass
 class CharacterArmorSet:
-    UPGRADE_NORMAL = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    UPGRADE_UNIQUE = [0, 0, 1, 1, 2, 2, 3, 4, 4, 5, 5]
-    UPGRADE_NONE = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    UPGRADE_NORMAL: ClassVar[list[int]] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    UPGRADE_UNIQUE: ClassVar[list[int]] = [0, 0, 1, 1, 2, 2, 3, 4, 4, 5, 5]
+    UPGRADE_NONE: ClassVar[list[int]] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-    def __init__(
-        self,
-        head_armor,
-        chest_armor,
-        arm_armor,
-        leg_armor,
-        head_upgrades,
-        chest_upgrades,
-        arm_upgrades,
-        leg_upgrades,
-        npc_usable=True,
-        player_usable=True,
-        special_hat=False,
-    ):
-        self.head_armor = head_armor
-        self.chest_armor = chest_armor
-        self.arm_armor = arm_armor
-        self.leg_armor = leg_armor
-        self.head_upgrades = head_upgrades
-        self.chest_upgrades = chest_upgrades
-        self.arm_upgrades = arm_upgrades
-        self.leg_upgrades = leg_upgrades
-        self.npc_usable = npc_usable
-        self.player_usable = player_usable
-        self.special_hat = special_hat
+    head_armor: int
+    chest_armor: int
+    arm_armor: int
+    leg_armor: int
+    head_upgrades: list[int]
+    chest_upgrades: list[int]
+    arm_upgrades: list[int]
+    leg_upgrades: list[int]
+    npc_usable: bool = True
+    player_usable: bool = True
+    special_hat: bool = False
 
     @classmethod
     def from_use_single_upgrade(
@@ -7634,7 +7524,7 @@ def randomize_chr_armor(chr_init_param, rand_options, random_source):
         for chr_id, upgrade_level in head_list:
             chr_init = chr_init_param.find_chr_by_id(chr_id)
             if chr_init == None:
-                log.warn(
+                log.warning(
                     "Attempted to randomize head armor of chr #"
                     + str(chr_id)
                     + " but was not found in chr_init_param!"
@@ -7653,7 +7543,7 @@ def randomize_chr_armor(chr_init_param, rand_options, random_source):
         for chr_id, upgrade_level in chest_list:
             chr_init = chr_init_param.find_chr_by_id(chr_id)
             if chr_init == None:
-                log.warn(
+                log.warning(
                     "Attempted to randomize chest armor of chr #"
                     + str(chr_id)
                     + " but was not found in chr_init_param!"
@@ -7671,7 +7561,7 @@ def randomize_chr_armor(chr_init_param, rand_options, random_source):
         for chr_id, upgrade_level in arms_list:
             chr_init = chr_init_param.find_chr_by_id(chr_id)
             if chr_init == None:
-                log.warn(
+                log.warning(
                     "Attempted to randomize arm armor of chr #"
                     + str(chr_id)
                     + " but was not found in chr_init_param!"
@@ -7688,7 +7578,7 @@ def randomize_chr_armor(chr_init_param, rand_options, random_source):
         for chr_id, upgrade_level in legs_list:
             chr_init = chr_init_param.find_chr_by_id(chr_id)
             if chr_init == None:
-                log.warn(
+                log.warning(
                     "Attempted to randomize leg armor of chr #"
                     + str(chr_id)
                     + " but was not found in chr_init_param!"
@@ -7704,6 +7594,7 @@ def randomize_chr_armor(chr_init_param, rand_options, random_source):
             chr_init.armor_leg = legs_to_use
 
 
+@dataclass
 class StartingClassWeaponShield:
     class POOL(Enum):
         RIGHT_HAND = 0  # In right-hand pool, and left-hand pool when expanded.
@@ -7711,13 +7602,12 @@ class StartingClassWeaponShield:
         BOTH = 2  # In both pools always.
         LEFT_ONLY_EXPANDED = 3  # In left-hand pool *only* when pool is expanded.
 
-    def __init__(self, req_str, req_dex, req_int, req_fth, two_handable, pool):
-        self.req_str = req_str
-        self.req_dex = req_dex
-        self.req_int = req_int
-        self.req_fth = req_fth
-        self.two_handable = two_handable
-        self.pool = pool
+    req_str: int
+    req_dex: int
+    req_int: int
+    req_fth: int
+    two_handable: bool
+    pool: POOL
 
     def can_be_used(
         self,
@@ -8036,6 +7926,7 @@ CLASS_TO_CHR_INIT = {
 }
 
 
+@dataclass
 class StartingClassData:
     class CHR_INIT(Enum):
         WEP_R1 = 0
@@ -8046,7 +7937,7 @@ class StartingClassData:
         SPELL_1 = 5
         ITEM_1 = 6
 
-    CHR_INIT_FIELD = {
+    CHR_INIT_FIELD: ClassVar[dict[CHR_INIT, tuple[str, str]]] = {
         CHR_INIT.WEP_R1: ("wep_r1", "right_hand"),
         CHR_INIT.WEP_R2: ("wep_r2", "extra"),
         CHR_INIT.WEP_L1: ("wep_l1", "left_hand"),
@@ -8056,21 +7947,12 @@ class StartingClassData:
         CHR_INIT.ITEM_1: ("item_1", "extra"),
     }
 
-    def __init__(
-        self,
-        class_name,
-        item_type,
-        item,
-        chr_init_fields,
-        item_quantity=1,
-        should_pass_to_items=True,
-    ):
-        self.class_name = class_name
-        self.item_type = item_type
-        self.item = item
-        self.chr_init_fields = chr_init_fields
-        self.item_quantity = item_quantity
-        self.should_pass_to_items = should_pass_to_items
+    class_name: str
+    item_type: item_s.ITEM_TYPE
+    item: int
+    chr_init_fields: list[CHR_INIT]
+    item_quantity: int = 1
+    should_pass_to_items: bool = True
 
 
 EXTRA_DATA = [
