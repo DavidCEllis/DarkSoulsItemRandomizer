@@ -11,10 +11,10 @@ import webbrowser
 import requests
 from distutils.version import LooseVersion
 
-import randomizer_options as rngopts
-import randomize_item_table
-import bnd_rebuilder
-import dcx_handler
+from . import randomizer_options as rngopts
+from . import randomize_item_table
+from . import bnd_rebuilder
+from . import dcx_handler
 
 import logging
 log = logging.getLogger(__name__)

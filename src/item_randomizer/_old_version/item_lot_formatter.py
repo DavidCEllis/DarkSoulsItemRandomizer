@@ -1,5 +1,5 @@
-import items_setup as item_s
-import shops_setup as shop_s
+from . import items_setup as item_s
+from . import shops_setup as shop_s
 
 ARMOR = {
  1000: "Shaved", 

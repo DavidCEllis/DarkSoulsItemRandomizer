@@ -5,9 +5,9 @@ import random
 from enum import Enum
 import math
 
-import chr_init_param as cip
-import randomizer_options as rng_opt
-import items_setup as item_s
+from . import chr_init_param as cip
+from . import randomizer_options as rng_opt
+from . import items_setup as item_s
 
 
 class ChrInitStats:
