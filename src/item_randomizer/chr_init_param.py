@@ -1,401 +1,136 @@
 import struct
 import sys
 
+from collections import namedtuple
+from dataclasses import dataclass
+from .util.dataclass_tools import as_tuple
 
 from .binary_handlers.binary_tools import extract_shift_jisz
 
 
-class ChrInit:
-    STRUCT_FORMAT = "<3fi4i4i4i5i3i7i10i2i3h4h3hh10b10b5b7b4b10x"
+ChrInitStruct = struct.Struct(
+    "< 3f i 4i 4i 4i 5i 3i 7i 10i 2i 3h 4h 3h h 10b 10b 5b 7b 4b 10x"
+)
 
-    def __init__(
-        self,
-        chr_init_id,
-        base_rec_mp,
-        base_rec_sp,
-        red_falldam,
-        soul,
-        wep_r1,
-        wep_r2,
-        wep_l1,
-        wep_l2,
-        armor_head,
-        armor_chest,
-        armor_hand,
-        armor_leg,
-        arrow_1,
-        bolt_1,
-        arrow_2,
-        bolt_2,
-        ring_1,
-        ring_2,
-        ring_3,
-        ring_4,
-        ring_5,
-        skill_1,
-        skill_2,
-        skill_3,
-        spell_1,
-        spell_2,
-        spell_3,
-        spell_4,
-        spell_5,
-        spell_6,
-        spell_7,
-        item_1,
-        item_2,
-        item_3,
-        item_4,
-        item_5,
-        item_6,
-        item_7,
-        item_8,
-        item_9,
-        item_10,
-        facegen_id,
-        think_id,
-        base_hp,
-        base_mp,
-        base_sp,
-        arrow_1_num,
-        bolt_1_num,
-        arrow_2_num,
-        bolt_2_num,
-        qwc_sb,
-        qwc_mw,
-        qwc_cd,
-        soul_level,
-        base_vit,
-        base_att,
-        base_end,
-        base_str,
-        base_dex,
-        base_int,
-        base_fth,
-        base_luc,
-        base_hum,
-        base_res,
-        item_1_num,
-        item_2_num,
-        item_3_num,
-        item_4_num,
-        item_5_num,
-        item_6_num,
-        item_7_num,
-        item_8_num,
-        item_9_num,
-        item_10_num,
-        body_scale_head,
-        body_scale_chest,
-        body_scale_ab,
-        body_scale_arm,
-        body_scale_leg,
-        gest_0,
-        gest_1,
-        gest_2,
-        gest_3,
-        gest_4,
-        gest_5,
-        gest_6,
-        npc_type,
-        draw_type,
-        sex,
-        covenant,
-        description,
-    ):
-        self.chr_init_id = chr_init_id
-        self.base_rec_mp = base_rec_mp
-        self.base_rec_sp = base_rec_sp
-        self.red_falldam = red_falldam
-        self.soul = soul
-        self.wep_r1 = wep_r1
-        self.wep_r2 = wep_r2
-        self.wep_l1 = wep_l1
-        self.wep_l2 = wep_l2
-        self.armor_head = armor_head
-        self.armor_chest = armor_chest
-        self.armor_hand = armor_hand
-        self.armor_leg = armor_leg
-        self.arrow_1 = arrow_1
-        self.bolt_1 = bolt_1
-        self.arrow_2 = arrow_2
-        self.bolt_2 = bolt_2
-        self.ring_1 = ring_1
-        self.ring_2 = ring_2
-        self.ring_3 = ring_3
-        self.ring_4 = ring_4
-        self.ring_5 = ring_5
-        self.skill_1 = skill_1
-        self.skill_2 = skill_2
-        self.skill_3 = skill_3
-        self.spell_1 = spell_1
-        self.spell_2 = spell_2
-        self.spell_3 = spell_3
-        self.spell_4 = spell_4
-        self.spell_5 = spell_5
-        self.spell_6 = spell_6
-        self.spell_7 = spell_7
-        self.item_1 = item_1
-        self.item_2 = item_2
-        self.item_3 = item_3
-        self.item_4 = item_4
-        self.item_5 = item_5
-        self.item_6 = item_6
-        self.item_7 = item_7
-        self.item_8 = item_8
-        self.item_9 = item_9
-        self.item_10 = item_10
-        self.facegen_id = facegen_id
-        self.think_id = think_id
-        self.base_hp = base_hp
-        self.base_mp = base_mp
-        self.base_sp = base_sp
-        self.arrow_1_num = arrow_1_num
-        self.bolt_1_num = bolt_1_num
-        self.arrow_2_num = arrow_2_num
-        self.bolt_2_num = bolt_2_num
-        self.qwc_sb = qwc_sb
-        self.qwc_mw = qwc_mw
-        self.qwc_cd = qwc_cd
-        self.soul_level = soul_level
-        self.base_vit = base_vit
-        self.base_att = base_att
-        self.base_end = base_end
-        self.base_str = base_str
-        self.base_dex = base_dex
-        self.base_int = base_int
-        self.base_fth = base_fth
-        self.base_luc = base_luc
-        self.base_hum = base_hum
-        self.base_res = base_res
-        self.item_1_num = item_1_num
-        self.item_2_num = item_2_num
-        self.item_3_num = item_3_num
-        self.item_4_num = item_4_num
-        self.item_5_num = item_5_num
-        self.item_6_num = item_6_num
-        self.item_7_num = item_7_num
-        self.item_8_num = item_8_num
-        self.item_9_num = item_9_num
-        self.item_10_num = item_10_num
-        self.body_scale_head = body_scale_head
-        self.body_scale_chest = body_scale_chest
-        self.body_scale_ab = body_scale_ab
-        self.body_scale_arm = body_scale_arm
-        self.body_scale_leg = body_scale_leg
-        self.gest_0 = gest_0
-        self.gest_1 = gest_1
-        self.gest_2 = gest_2
-        self.gest_3 = gest_3
-        self.gest_4 = gest_4
-        self.gest_5 = gest_5
-        self.gest_6 = gest_6
-        self.npc_type = npc_type
-        self.draw_type = draw_type
-        self.sex = sex
-        self.covenant = covenant
-        self.description = description
+ChrInitTuple = namedtuple("ChrInitTuple", "chr_init_id data description")
+
+
+@dataclass
+class ChrInit:
+    chr_init_id: int
+    base_rec_mp: float
+    base_rec_sp: float
+    red_falldam: float
+    soul: int
+    wep_r1: int
+    wep_r2: int
+    wep_l1: int
+    wep_l2: int
+    armor_head: int
+    armor_chest: int
+    armor_hand: int
+    armor_leg: int
+    arrow_1: int
+    bolt_1: int
+    arrow_2: int
+    bolt_2: int
+    ring_1: int
+    ring_2: int
+    ring_3: int
+    ring_4: int
+    ring_5: int
+    skill_1: int
+    skill_2: int
+    skill_3: int
+    spell_1: int
+    spell_2: int
+    spell_3: int
+    spell_4: int
+    spell_5: int
+    spell_6: int
+    spell_7: int
+    item_1: int
+    item_2: int
+    item_3: int
+    item_4: int
+    item_5: int
+    item_6: int
+    item_7: int
+    item_8: int
+    item_9: int
+    item_10: int
+    facegen_id: int
+    think_id: int
+    base_hp: int  # Shorts from here
+    base_mp: int
+    base_sp: int
+    arrow_1_num: int
+    bolt_1_num: int
+    arrow_2_num: int
+    bolt_2_num: int
+    qwc_sb: int
+    qwc_mw: int
+    qwc_cd: int
+    soul_level: int
+    base_vit: int  # Chrs from here
+    base_att: int
+    base_end: int
+    base_str: int
+    base_dex: int
+    base_int: int
+    base_fth: int
+    base_luc: int
+    base_hum: int
+    base_res: int
+    item_1_num: int
+    item_2_num: int
+    item_3_num: int
+    item_4_num: int
+    item_5_num: int
+    item_6_num: int
+    item_7_num: int
+    item_8_num: int
+    item_9_num: int
+    item_10_num: int
+    body_scale_head: int
+    body_scale_chest: int
+    body_scale_ab: int
+    body_scale_arm: int
+    body_scale_leg: int
+    gest_0: int
+    gest_1: int
+    gest_2: int
+    gest_3: int
+    gest_4: int
+    gest_5: int
+    gest_6: int
+    npc_type: int
+    draw_type: int
+    sex: int
+    covenant: int
+    description: str
 
     @classmethod
     def from_binary(cls, chr_init_id, data, description):
         return cls(
             chr_init_id,
-            *struct.unpack_from(cls.STRUCT_FORMAT, data, offset=0),
+            *ChrInitStruct.unpack_from(data, offset=0),
             description,
         )
 
     def to_binary(self):
-        arg_list = [
-            self.base_rec_mp,
-            self.base_rec_sp,
-            self.red_falldam,
-            self.soul,
-            self.wep_r1,
-            self.wep_r2,
-            self.wep_l1,
-            self.wep_l2,
-            self.armor_head,
-            self.armor_chest,
-            self.armor_hand,
-            self.armor_leg,
-            self.arrow_1,
-            self.bolt_1,
-            self.arrow_2,
-            self.bolt_2,
-            self.ring_1,
-            self.ring_2,
-            self.ring_3,
-            self.ring_4,
-            self.ring_5,
-            self.skill_1,
-            self.skill_2,
-            self.skill_3,
-            self.spell_1,
-            self.spell_2,
-            self.spell_3,
-            self.spell_4,
-            self.spell_5,
-            self.spell_6,
-            self.spell_7,
-            self.item_1,
-            self.item_2,
-            self.item_3,
-            self.item_4,
-            self.item_5,
-            self.item_6,
-            self.item_7,
-            self.item_8,
-            self.item_9,
-            self.item_10,
-            self.facegen_id,
-            self.think_id,
-            self.base_hp,
-            self.base_mp,
-            self.base_sp,
-            self.arrow_1_num,
-            self.bolt_1_num,
-            self.arrow_2_num,
-            self.bolt_2_num,
-            self.qwc_sb,
-            self.qwc_mw,
-            self.qwc_cd,
-            self.soul_level,
-            self.base_vit,
-            self.base_att,
-            self.base_end,
-            self.base_str,
-            self.base_dex,
-            self.base_int,
-            self.base_fth,
-            self.base_luc,
-            self.base_hum,
-            self.base_res,
-            self.item_1_num,
-            self.item_2_num,
-            self.item_3_num,
-            self.item_4_num,
-            self.item_5_num,
-            self.item_6_num,
-            self.item_7_num,
-            self.item_8_num,
-            self.item_9_num,
-            self.item_10_num,
-            self.body_scale_head,
-            self.body_scale_chest,
-            self.body_scale_ab,
-            self.body_scale_arm,
-            self.body_scale_leg,
-            self.gest_0,
-            self.gest_1,
-            self.gest_2,
-            self.gest_3,
-            self.gest_4,
-            self.gest_5,
-            self.gest_6,
-            self.npc_type,
-            self.draw_type,
-            self.sex,
-            self.covenant,
-        ]
-        data = struct.pack(self.STRUCT_FORMAT, *arg_list)
-        return (self.chr_init_id, data, self.description)
+        excluded_fields = {"chr_init_id", "description"}
+        arg_tuple = as_tuple(self, excluded_fields)
+        data = ChrInitStruct.pack(*arg_tuple)
+        return ChrInitTuple(self.chr_init_id, data, self.description)
 
     def to_string(self):
-        arg_list = [
-            self.chr_init_id,
-            self.description,
-            self.base_rec_mp,
-            self.base_rec_sp,
-            self.red_falldam,
-            self.soul,
-            self.wep_r1,
-            self.wep_r2,
-            self.wep_l1,
-            self.wep_l2,
-            self.armor_head,
-            self.armor_chest,
-            self.armor_hand,
-            self.armor_leg,
-            self.arrow_1,
-            self.bolt_1,
-            self.arrow_2,
-            self.bolt_2,
-            self.ring_1,
-            self.ring_2,
-            self.ring_3,
-            self.ring_4,
-            self.ring_5,
-            self.skill_1,
-            self.skill_2,
-            self.skill_3,
-            self.spell_1,
-            self.spell_2,
-            self.spell_3,
-            self.spell_4,
-            self.spell_5,
-            self.spell_6,
-            self.spell_7,
-            self.item_1,
-            self.item_2,
-            self.item_3,
-            self.item_4,
-            self.item_5,
-            self.item_6,
-            self.item_7,
-            self.item_8,
-            self.item_9,
-            self.item_10,
-            self.facegen_id,
-            self.think_id,
-            self.base_hp,
-            self.base_mp,
-            self.base_sp,
-            self.arrow_1_num,
-            self.bolt_1_num,
-            self.arrow_2_num,
-            self.bolt_2_num,
-            self.qwc_sb,
-            self.qwc_mw,
-            self.qwc_cd,
-            self.soul_level,
-            self.base_vit,
-            self.base_att,
-            self.base_end,
-            self.base_str,
-            self.base_dex,
-            self.base_int,
-            self.base_fth,
-            self.base_luc,
-            self.base_hum,
-            self.base_res,
-            self.item_1_num,
-            self.item_2_num,
-            self.item_3_num,
-            self.item_4_num,
-            self.item_5_num,
-            self.item_6_num,
-            self.item_7_num,
-            self.item_8_num,
-            self.item_9_num,
-            self.item_10_num,
-            self.body_scale_head,
-            self.body_scale_chest,
-            self.body_scale_ab,
-            self.body_scale_arm,
-            self.body_scale_leg,
-            self.gest_0,
-            self.gest_1,
-            self.gest_2,
-            self.gest_3,
-            self.gest_4,
-            self.gest_5,
-            self.gest_6,
-            self.npc_type,
-            self.draw_type,
-            self.sex,
-            self.covenant,
-        ]
-        return ("%d %s " + "%d " * 90) % tuple(arg_list)
+        # Keep the same format as the old version
+        excluded_fields = {"chr_init_id", "description"}
+        values = as_tuple(self, excluded_fields)
+        header = f"{self.chr_init_id} {self.description}"
+        body = " ".join(f"{int(value)}" for value in values)
+        return " ".join([header, body])
 
 
 class ChrInitParam:
@@ -403,7 +138,7 @@ class ChrInitParam:
     DATA_RECORD_SIZE = 0xF0
 
     def __init__(self, chr_inits=None):
-        if chr_inits == None:
+        if chr_inits is None:
             chr_inits = []
         self.chr_inits = chr_inits
 
@@ -471,8 +206,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     with open(sys.argv[1], "rb") as f:
-        file_content = f.read()
+        content = f.read()
 
-        data = ChrInitParam.load_from_file_content(file_content)
-        for chr_init in data.chr_inits:
-            print(chr_init.to_string())
+    chr_data = ChrInitParam.load_from_file_content(content)
+    for chr_init in chr_data.chr_inits:
+        print(chr_init.to_string())
