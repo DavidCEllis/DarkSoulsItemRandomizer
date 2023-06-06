@@ -18,6 +18,9 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
 ]
 dynamic = ['version']
+dependencies = [
+    "ordered-set",
+]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
