@@ -36,3 +36,10 @@ build = ["cx-freeze", "pywin32"]
 [tool.black]
 line-length = 88
 target-version = ['py311']
+extend-exclude = '''
+# A regex preceded with ^/ will apply only to files and directories
+# in the root of the project.
+(
+  old_version/*  # Don't autoformat the old version folder
+)
+'''

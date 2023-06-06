@@ -1,7 +1,10 @@
 import struct
 import sys
+from dataclasses import dataclass
+from collections import namedtuple
+import typing
 
-from .binary_handlers.binary_tools import consume_byte, extract_shift_jisz
+from .base_param import BaseItem, BaseParam
 
 
 def unpack_data_to_item_list(data):
@@ -184,57 +187,39 @@ class ItemLotItemType:
     NONE = -1  # \xffffffff
 
 
+ItemLotTuple = namedtuple("ItemLotTuple", "lot_id data description")
+
+
+@dataclass
 class ItemLotItem:
-    def __init__(
-        self,
-        item_category=ItemLotItemType.WEAPON,
-        item_id=0,
-        item_count=0,
-        item_weight=0,
-        item_cumul=0,
-        item_flag=0,
-        item_luck=False,
-        item_cumul_reset=False,
-    ):
-        self.item_category = item_category
-        self.item_id = item_id
-        self.item_count = item_count
-        self.item_weight = item_weight
-        self.item_cumul = item_cumul
-        self.item_flag = item_flag
-        self.item_luck = item_luck
-        self.item_cumul_reset = item_cumul_reset
+    item_category: int = ItemLotItemType.WEAPON
+    item_id: int = 0
+    item_count: int = 0
+    item_weight: int = 0
+    item_cumul: int = 0
+    item_flag: int = 0
+    item_luck: bool = False
+    item_cumul_reset: bool = False
 
 
-class ItemLot:
-    def __init__(
-        self,
-        lot_id,
-        get_item_lot_flag,
-        cumul_num_flag,
-        cumul_num_max,
-        rarity,
-        item_list,
-        description,
-    ):
-        if len(item_list) > 8:
+@dataclass
+class ItemLot(BaseItem):
+    lot_id: int
+    get_item_lot_flag: typing.Any
+    cumul_num_flag: typing.Any
+    cumul_num_max: int
+    rarity: typing.Any
+    item_list: typing.Any
+    description: str
+
+    def __post_init__(self):
+        if len(self.item_list) > 8:
             raise ValueError(
-                "ItemLot cannot have more than 8 items. "
-                + "Received "
-                + str(len(item_list))
-                + " items in Lot #"
-                + str(lot_id)
-                + "."
+                f"ItemLot cannot have more than 8 items. "
+                f"Received {len(self.item_list)} items in Lot #{self.lot_id}."
             )
-        item_list += [ItemLotItem() for _ in range(8 - len(item_list))]
 
-        self.lot_id = lot_id
-        self.get_item_lot_flag = get_item_lot_flag
-        self.cumul_num_flag = cumul_num_flag
-        self.cumul_num_max = cumul_num_max
-        self.rarity = rarity
-        self.item_list = item_list
-        self.description = description
+        self.item_list += [ItemLotItem() for _ in range(8 - len(self.item_list))]
 
     @classmethod
     def from_binary(cls, lot_id, data, description):
@@ -292,15 +277,17 @@ class ItemLot:
         )
 
         data = struct.pack("@8I 8i 8h 8H 8i i i B B 8B c c", *arg_list)
-        return (self.lot_id, data, self.description)
+        return ItemLotTuple(self.lot_id, data, self.description)
 
 
-class ItemLotParam:
+class ItemLotParam(BaseParam):
     RECORD_SIZE = 0xC
     DATA_RECORD_SIZE = 0x94
 
+    BASE_OBJ = ItemLot
+
     def __init__(self, item_lots=None):
-        if item_lots == None:
+        if item_lots is None:
             item_lots = []
         self.item_lots = item_lots
 
@@ -310,34 +297,13 @@ class ItemLotParam:
             > 0
         )
 
-    @classmethod
-    def load_from_file_content(cls, file_content):
-        master_offset = 0
-
+    @staticmethod
+    def get_count(file_content, master_offset):
         (strings_offset, data_offset, unk, item_lot_count) = struct.unpack_from(
             "<IIHH", file_content, offset=master_offset
         )
 
-        master_offset = 0x30  # Skip the rest of the header.
-
-        item_lots = []
-        for i in range(item_lot_count):
-            (
-                item_lot_id,
-                item_lot_data_offset,
-                item_lot_string_offset,
-            ) = struct.unpack_from("<III", file_content, offset=master_offset)
-            master_offset += struct.calcsize("<III")
-
-            description = extract_shift_jisz(file_content, item_lot_string_offset)
-            item_lot_data = file_content[
-                item_lot_data_offset : item_lot_data_offset + cls.DATA_RECORD_SIZE
-            ]
-
-            item_lots.append(
-                ItemLot.from_binary(item_lot_id, item_lot_data, description)
-            )
-        return ItemLotParam(item_lots)
+        return item_lot_count
 
     def export_as_binary(self):
         num_of_records = len(self.item_lots)

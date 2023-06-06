@@ -1,9 +1,11 @@
 import struct
 import sys
 
+from collections import namedtuple
+from dataclasses import dataclass
+import typing
 
-from .binary_handlers.binary_tools import consume_byte, extract_shift_jisz
-
+from .base_param import BaseItem, BaseParam
 
 class ShopLineItemType:
     WEAPON = 0
@@ -13,31 +15,20 @@ class ShopLineItemType:
     SHOP_SPELL = 4
     NONE = -1
 
+ShopLineupTuple = namedtuple("ShopLineupTuple", "lineup_id data description")
 
-class ShopLineup:
-    def __init__(
-        self,
-        lineup_id,
-        item_type,
-        item_id,
-        cost,
-        sell_quantity,
-        event_flag,
-        mtrl_id,
-        qwc_id,
-        shop_type,
-        description,
-    ):
-        self.lineup_id = lineup_id
-        self.item_type = item_type
-        self.item_id = item_id
-        self.cost = cost
-        self.sell_quantity = sell_quantity
-        self.event_flag = event_flag
-        self.mtrl_id = mtrl_id
-        self.qwc_id = qwc_id
-        self.shop_type = shop_type
-        self.description = description
+@dataclass
+class ShopLineup(BaseItem):
+    lineup_id: int
+    item_type: typing.Any
+    item_id: int
+    cost: int
+    sell_quantity: int
+    event_flag: typing.Any
+    mtrl_id: typing.Any
+    qwc_id: typing.Any
+    shop_type: typing.Any
+    description: str
 
     @classmethod
     def from_binary(cls, lineup_id, data, description):
@@ -78,7 +69,7 @@ class ShopLineup:
             self.item_type,
         ]
         data = struct.pack("@iiiiihBb", *arg_list) + b"\x00" * 8
-        return (self.lineup_id, data, self.description)
+        return ShopLineupTuple(self.lineup_id, data, self.description)
 
     def as_string(self):
         return "Id: %d (%d %d %d %d %d %d %d %d): %s" % (
@@ -95,20 +86,19 @@ class ShopLineup:
         )
 
 
-RECORD_SIZE = 0xC
-DATA_RECORD_SIZE = 0x20
+class ShopLineupParam(BaseParam):
+    RECORD_SIZE = 0xC
+    DATA_RECORD_SIZE = 0x20
 
+    BASE_OBJ = ShopLineup
 
-class ShopLineupParam:
     def __init__(self, shop_lineups=None):
-        if shop_lineups == None:
+        if shop_lineups is None:
             shop_lineups = []
         self.shop_lineups = shop_lineups
 
-    @classmethod
-    def load_from_file_content(cls, file_content):
-        master_offset = 0
-
+    @staticmethod
+    def get_count(file_content, master_offset):
         (
             strings_offset,
             data_offset,
@@ -117,30 +107,13 @@ class ShopLineupParam:
             shop_lineup_count,
         ) = struct.unpack_from("<IHHHH", file_content, offset=master_offset)
 
-        master_offset = 0x30  # Skip the rest of the header.
-
-        shop_lineups = []
-        for i in range(shop_lineup_count):
-            (lineup_id, lineup_data_offset, lineup_string_offset) = struct.unpack_from(
-                "<III", file_content, offset=master_offset
-            )
-            master_offset += struct.calcsize("<III")
-
-            description = extract_shift_jisz(file_content, lineup_string_offset)
-            lineup_data = file_content[
-                lineup_data_offset : lineup_data_offset + DATA_RECORD_SIZE
-            ]
-
-            shop_lineups.append(
-                ShopLineup.from_binary(lineup_id, lineup_data, description)
-            )
-        return ShopLineupParam(shop_lineups)
+        return shop_lineup_count
 
     def export_as_binary(self):
         num_of_records = len(self.shop_lineups)
         records_offset = 0x30
-        data_offset = records_offset + num_of_records * RECORD_SIZE
-        strings_offset = data_offset + num_of_records * DATA_RECORD_SIZE
+        data_offset = records_offset + num_of_records * self.RECORD_SIZE
+        strings_offset = data_offset + num_of_records * self.DATA_RECORD_SIZE
         header = (
             struct.pack("@IHHHH", strings_offset, data_offset, 1, 1, num_of_records)
             + b"SHOP_LINEUP_PARAM"
