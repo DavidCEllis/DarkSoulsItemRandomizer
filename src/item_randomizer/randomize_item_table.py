@@ -9,7 +9,7 @@ from . import locations_setup as loc_s
 from . import shops_setup as shop_s
 from . import item_table as item_t
 from . import chr_setup as chr_s
-from . import chr_init_param as cip
+from item_randomizer.binary_handlers import chr_init_param as cip
 
 import copy
 

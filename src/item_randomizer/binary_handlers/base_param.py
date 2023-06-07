@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
 import struct
-from .binary_handlers.binary_tools import extract_shift_jisz
+
+from .binary_tools import extract_shift_jisz
 
 
 class BaseItem(ABC):

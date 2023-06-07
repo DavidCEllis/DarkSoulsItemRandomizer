@@ -8,7 +8,7 @@ import math
 from dataclasses import dataclass, field as dc_field
 from typing import ClassVar
 
-from . import chr_init_param as cip
+from item_randomizer.binary_handlers import chr_init_param as cip
 from . import randomizer_options as rng_opt
 from . import items_setup as item_s
 

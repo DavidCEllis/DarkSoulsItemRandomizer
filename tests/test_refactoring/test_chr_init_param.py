@@ -1,6 +1,6 @@
 from dataclasses import fields
 
-from item_randomizer.chr_init_param import ChrInit
+from item_randomizer.binary_handlers.chr_init_param import ChrInit
 # noinspection PyProtectedMember
 from item_randomizer._old_version.chr_init_param import ChrInit as OldChrInit
 

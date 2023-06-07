@@ -4,7 +4,7 @@ import sys
 from collections import namedtuple
 from dataclasses import dataclass
 
-from .util.dataclass_tools import as_tuple
+from ..util.dataclass_tools import as_tuple
 from .base_param import BaseItem, BaseParam
 
 ChrInitStruct = struct.Struct(

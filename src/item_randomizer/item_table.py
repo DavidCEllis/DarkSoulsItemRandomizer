@@ -5,9 +5,7 @@ from . import items_setup as item_s
 from . import locations_setup as loc_s
 from . import item_lot_formatter
 
-from . import item_lot_param as ilp
-from . import shop_lineup_param as slp
-
+from .binary_handlers import shop_lineup_param as slp, item_lot_param as ilp
 
 log = logging.getLogger(__name__)
 
