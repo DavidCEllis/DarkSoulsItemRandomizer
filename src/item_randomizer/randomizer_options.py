@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+
+
 class RandOptDifficulty:
     EASY = 0
     MEDIUM = 1
@@ -83,28 +86,18 @@ class RandOptGameVersion:
             return ""
 
 
+@dataclass
 class RandomizerOptions:
-    def __init__(
-        self,
-        difficulty,
-        fashion_souls,
-        key_placement,
-        use_lordvessel,
-        use_lord_souls,
-        soul_items_diff,
-        start_items_diff,
-        game_version,
-        randomize_npc_armor,
-    ):
-        self.difficulty = difficulty
-        self.fashion_souls = fashion_souls
-        self.key_placement = key_placement
-        self.use_lordvessel = use_lordvessel
-        self.use_lord_souls = use_lord_souls
-        self.soul_items_diff = soul_items_diff
-        self.start_items_diff = start_items_diff
-        self.game_version = game_version
-        self.randomize_npc_armor = randomize_npc_armor
+    difficulty: int
+    fashion_souls: bool
+    key_placement: int
+    use_lordvessel: bool
+    use_lord_souls: bool
+    soul_items_diff: int
+    start_items_diff: int
+    game_version: int
+    randomize_npc_armor: bool
+
 
     def bool_option_to_string(self, b):
         if b:

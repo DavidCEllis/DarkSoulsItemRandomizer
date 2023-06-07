@@ -1,15 +1,17 @@
+from dataclasses import dataclass
+
 from . import items_setup as item_s
 from . import locations_setup as loc_s
 
 
 # qwc_id should match the count of the shop item (including -1 for items
 #  that can be infinitely purchased), so it is not included here.
+@dataclass
 class ShopData:
-    def __init__(self, shop_id, cost=-1, shop_type=0, mtrl_id=-1):
-        self.shop_id = shop_id
-        self.cost = cost
-        self.shop_type = shop_type
-        self.mtrl_id = mtrl_id
+    shop_id: int
+    cost: int = -1
+    shop_type: int = 0
+    mtrl_id: int = -1
 
 
 DEFAULT_SHOP_DATA = {

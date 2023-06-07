@@ -1,9 +1,11 @@
 import logging
+from dataclasses import dataclass, field as dc_field
+from enum import IntEnum
 
 log = logging.getLogger(__name__)
 
 
-class ITEM_TYPE:
+class ITEM_TYPE(IntEnum):  # Potentially should be IntFlag?
     NONE = -1
     WEAPON = 0
     ARMOR = 1
@@ -12,7 +14,7 @@ class ITEM_TYPE:
     SHOP_SPELL = -4
 
 
-class ITEM_DIF:
+class ITEM_DIF(IntEnum):
     IGNORE = -1  # Not used by the game.
     EASY = 0
     MEDIUM = 1
@@ -32,46 +34,47 @@ class ITEM_DIF:
     )
 
 
+@dataclass
 class ItemLotEntry:
-    def __init__(self, item_type, item_id, count=1, luck=True, rate=100):
-        self.item_type = item_type
-        self.item_id = item_id
-        self.count = count
-        self.luck = luck
-        self.rate = rate
+    item_type: int
+    item_id: int
+    count: int = 1
+    luck: bool = True
+    rate: int = 100
 
 
+@dataclass
 class ItemLotPart:
-    def __init__(
-        self,
-        difficulty,
-        rarity,
-        items,
-        flag=-1,
-        needs_flag=False,
-        follow_items=[],
-        always_follow_items=False,
-        key_name=None,
-        flag_can_tolerate_shop=True,
-    ):
-        if needs_flag and flag == -1:
-            log.warn("Warning: ItemLotPart indicates it needs flag, but has none.")
-        if len(items) > 8:
-            log.warn("Warning: ItemLotPart exceeds maximum item limit (8)")
-        if difficulty == ITEM_DIF.KEY and follow_items:
-            log.warn(
+    difficulty: int
+    rarity: int
+    items: list[ItemLotEntry]
+    flag: int = -1
+    needs_flag: bool = False
+    follow_items: list[int] = dc_field(default_factory=list)
+    always_follow_items: bool = False
+    key_name: str | None = None
+    flag_can_tolerate_shop: bool = True
+
+    def __post_init__(self):
+        if self.needs_flag and self.flag == -1:
+            log.warning("Warning: ItemLotPart indicates it needs flag, but has none.")
+        if len(self.items) > 8:
+            log.warning("Warning: ItemLotPart exceeds maximum item limit (8)")
+        if self.difficulty == ITEM_DIF.KEY and self.follow_items:
+            log.warning(
                 "Warning: Key ItemLotPart has follow items, which is not sensible."
             )
 
-        self.diff = difficulty
-        self.rarity = rarity
-        self.items = items
-        self.flag = flag
-        self.needs_flag = needs_flag
-        self.follow_items = follow_items
-        self.always_follow_items = always_follow_items
-        self.key_name = key_name
-        self.flag_can_tolerate_shop = flag_can_tolerate_shop
+    # There was a discrepency between the original field name being difficulty
+    # and the stored value being diff.
+    # For now a property duplicates the value.
+    @property
+    def diff(self):
+        return self.difficulty
+
+    @diff.setter
+    def diff(self, value):
+        self.difficulty = value
 
     def get_max_effective_size(self):
         if self.needs_flag:

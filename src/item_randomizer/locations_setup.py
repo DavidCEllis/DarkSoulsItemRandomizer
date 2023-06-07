@@ -1,7 +1,9 @@
+from enum import IntEnum
+from dataclasses import dataclass, field as dc_field
 # Set up location information.
 
 
-class LOC_DIF:
+class LOC_DIF(IntEnum):
     IGNORE = -1  # Not used by the game.
     EASY = 0
     MEDIUM = 1
@@ -19,7 +21,7 @@ class LOC_DIF:
     LEAVE_ALONE = 13  # Important items that aren't appropriate to shuffle.
 
 
-class AREA:
+class AREA(IntEnum):
     NONE = -1
     MOVING_NPC = 0
     DEPTHS = 1
@@ -76,63 +78,46 @@ class AREA:
 # has_cumul_flag: (flag, count, chance_numerator, chance_denominator, cumulative_point)
 #  * The first two are to build the drop table itself.
 #  * The last three are to build the items in the drop table.
+@dataclass
 class CumulFlag:
-    def __init__(self, flag, count, chance_numer, chance_denom, cumulative_point):
-        self.flag = flag
-        self.count = count
-        self.chance_numer = chance_numer
-        self.chance_denom = chance_denom
-        self.cumulative_point = cumulative_point
+    flag: int
+    count: int
+    chance_numer: int
+    chance_denom: int
+    cumulative_point: int
 
 
+@dataclass
 class Location:
-    def __repr__(self):
-        return str("Location (id: " + str(self.location_id) + ")")
+    diff: int
+    area: int
+    max_size: int
+    is_transient: bool = False
+    is_race_key_loc: bool = False
+    linked_locations: list = dc_field(default_factory=list)
+    has_flag: int = -1
+    has_cumul_flag: object = None
+    default_key: object = None
+    location_id: int = -1
 
-    def __init__(
-        self,
-        diff,
-        area,
-        max_size,
-        is_transient=False,
-        is_race_key_loc=False,
-        linked_locations=[],
-        has_flag=-1,
-        has_cumul_flag=None,
-        default_key=None,
-        location_id=-1,
-    ):
-        if diff == LOC_DIF.IGNORE and area != AREA.NONE:
+    def __post_init__(self):
+        self.validate()
+
+    def validate(self):
+        if self.diff == LOC_DIF.IGNORE and self.area != AREA.NONE:
             print("Warning: Difficulty = IGNORE and area != NONE")
-        if (
-            diff != LOC_DIF.NPC_EASY
-            and diff != LOC_DIF.NPC_MEDIUM
-            and diff != LOC_DIF.NPC_HARD
-            and diff != LOC_DIF.EMPTY
-            and diff != LOC_DIF.UPGRADE
-            and diff != LOC_DIF.RANDOM_UPGRADE
-        ) and area == AREA.NPC_RNG_DROP:
+        if self.diff not in {LOC_DIF.NPC_EASY, LOC_DIF.NPC_MEDIUM, LOC_DIF.NPC_HARD, LOC_DIF.EMPTY, LOC_DIF.UPGRADE, LOC_DIF.RANDOM_UPGRADE} and self.area == AREA.NPC_RNG_DROP:
             print(
-                "Warning: Difficulty != NPC_(EASY|MEDIUM|HARD) but area = NPC_RNG_DROP"
+                "Warning: Difficulty != NPC_(EASY|MEDIUM|HARD) "
+                "but area = NPC_RNG_DROP"
             )
-        if (
-            diff == LOC_DIF.NPC_EASY
-            or diff == LOC_DIF.NPC_MEDIUM
-            or diff == LOC_DIF.NPC_HARD
-        ) and area != AREA.NPC_RNG_DROP:
+        if self.diff in {LOC_DIF.NPC_EASY, LOC_DIF.NPC_MEDIUM, LOC_DIF.NPC_HARD} and self.area != AREA.NPC_RNG_DROP:
             print(
                 "Warning: Difficulty = NPC_(EASY|MEDIUM|HARD) and area != NPC_RNG_DROP"
             )
 
-        self.diff = diff
-        self.area = area
-        self.max_size = max_size
-        self.is_transient = is_transient
-        self.is_race_key_loc = is_race_key_loc
-        self.linked_locations = linked_locations
-        self.has_flag = has_flag
-        self.has_cumul_flag = has_cumul_flag
-        self.default_key = default_key
+    def __str__(self):
+        return f"Location (id: {self.location_id})"
 
 
 LOCATIONS = {

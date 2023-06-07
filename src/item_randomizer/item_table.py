@@ -12,9 +12,9 @@ log = logging.getLogger(__name__)
 
 class ItemTable:
     def __init__(self, location_dict=None, shop_dict=None):
-        if location_dict == None:
+        if location_dict is None:
             location_dict = {}
-        if shop_dict == None:
+        if shop_dict is None:
             shop_dict = {}
         self.table = {}
         self.location_dict = location_dict
@@ -56,7 +56,7 @@ class ItemTable:
             self.table[loc_id] += [itemlotpart] + [
                 item_list[i] for i in itemlotpart.follow_items
             ]
-        if price != None:
+        if price is not None:
             for linkloc_id in [loc_id] + self.location_dict[loc_id].linked_locations:
                 if linkloc_id in self.shop_dict:
                     log.info(
