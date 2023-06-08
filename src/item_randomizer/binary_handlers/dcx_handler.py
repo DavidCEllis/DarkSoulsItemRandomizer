@@ -1,7 +1,10 @@
+"""
+Handle the dcx compressed files used for the remastered version of the game.
+"""
+
 import struct
 import zlib
 import sys
-import os
 
 from .binary_tools import consume_byte
 
