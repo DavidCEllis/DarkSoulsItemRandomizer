@@ -7,6 +7,7 @@ import os
 import datetime
 import shutil
 import webbrowser
+from dataclasses import dataclass
 
 from . import randomizer_options as rngopts
 from . import randomize_item_table
@@ -105,13 +106,23 @@ DESC_ORDER = [
 
 def resource_path(rel_path):
     try:
-        base_path = sys._MEIPASS
-    except Exception:
-        base_path = os.path.abspath(".")
+        # Pyinstaller bundle
+        base_path = getattr(sys, "_MEIPASS")
+    except AttributeError:
+        # Plain Python folder
+        base_path = os.path.abspath("../resources")
     return os.path.join(base_path, rel_path)
 
 
-class Placeholder_State(object):
+@dataclass(slots=True)
+class PlaceholderState:
+    normal_color: str
+    normal_font: str
+    placeholder_color: str
+    placeholder_font: str
+    placeholder_text: str
+    with_placeholder: bool
+
     __slots__ = (
         "normal_color",
         "normal_font",
@@ -1034,20 +1045,27 @@ class MainGUI:
         if len(value) > MAX_SEED_LENGTH:
             self.seed_string.set(value[:MAX_SEED_LENGTH])
 
-    def add_placeholder_to(self, entry, placeholder, color="grey", font=None):
+    def add_placeholder_to(
+            self,
+            entry: tk.Entry,
+            placeholder: str,
+            color: str = "grey",
+            font: str | None = None
+    ):
         normal_color = entry.cget("fg")
         normal_font = entry.cget("font")
 
         if font is None:
             font = normal_font
 
-        state = Placeholder_State()
-        state.normal_color = normal_color
-        state.normal_font = normal_font
-        state.placeholder_color = color
-        state.placeholder_font = font
-        state.placeholder_text = placeholder
-        state.with_placeholder = True
+        state = PlaceholderState(
+            normal_color=normal_color,
+            normal_font=normal_font,
+            placeholder_color=color,
+            placeholder_font=font,
+            placeholder_text=placeholder,
+            with_placeholder=True
+        )
 
         def on_focusin(event, entry=entry, state=state):
             if state.with_placeholder:
