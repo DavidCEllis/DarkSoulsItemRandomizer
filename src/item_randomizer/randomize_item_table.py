@@ -742,13 +742,13 @@ def place_starting_equipment(
 def build_table(
         rand_options,
         random_source,
-        chr_init_data
+        chr_init_data=None,
 ) -> tuple[item_t.ItemTable, cip.ChrInitParam]:
     # Create a deep copy of the list of items to be modified for this table.
     item_list = copy.deepcopy(item_s.ITEMS)
 
     # Deal with chr_init_data
-    if chr_init_data == None:
+    if chr_init_data is None:
         chr_inits = [
             chr_s.VANILLA_CHRS[chr_id].to_chr_init(chr_id, "")
             for chr_id in chr_s.VANILLA_CHRS
@@ -756,7 +756,9 @@ def build_table(
         given_cip = cip.ChrInitParam(chr_inits)
     else:
         given_cip = cip.ChrInitParam.load_from_file_content(chr_init_data)
+
     chr_s.randomize_chr_armor(given_cip, rand_options, random_source)
+
     data_passed_from_chr_init = chr_s.randomize_starting_chr_weapons(
         given_cip, rand_options, random_source
     )
@@ -765,7 +767,8 @@ def build_table(
         print(chr_init.to_string())
 
     table = item_t.ItemTable(
-        copy.deepcopy(loc_s.LOCATIONS), copy.deepcopy(shop_s.DEFAULT_SHOP_DATA)
+        copy.deepcopy(loc_s.LOCATIONS),
+        copy.deepcopy(shop_s.DEFAULT_SHOP_DATA)
     )
     place_ignored_items(table, item_list)
     place_upgrade_items(table, random_source, item_list)
@@ -773,6 +776,7 @@ def build_table(
     place_starting_equipment(table, data_passed_from_chr_init, item_list)
     place_non_key_fixed_items(table, rand_options, random_source, item_list)
     table.fix_pickup_flags()
+
     return (table, given_cip)
 
 

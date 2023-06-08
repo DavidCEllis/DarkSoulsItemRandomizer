@@ -1,5 +1,6 @@
 from enum import IntEnum
 from dataclasses import dataclass, field as dc_field
+
 # Set up location information.
 
 
@@ -106,12 +107,26 @@ class Location:
     def validate(self):
         if self.diff == LOC_DIF.IGNORE and self.area != AREA.NONE:
             print("Warning: Difficulty = IGNORE and area != NONE")
-        if self.diff not in {LOC_DIF.NPC_EASY, LOC_DIF.NPC_MEDIUM, LOC_DIF.NPC_HARD, LOC_DIF.EMPTY, LOC_DIF.UPGRADE, LOC_DIF.RANDOM_UPGRADE} and self.area == AREA.NPC_RNG_DROP:
+        if (
+            self.diff
+            not in {
+                LOC_DIF.NPC_EASY,
+                LOC_DIF.NPC_MEDIUM,
+                LOC_DIF.NPC_HARD,
+                LOC_DIF.EMPTY,
+                LOC_DIF.UPGRADE,
+                LOC_DIF.RANDOM_UPGRADE,
+            }
+            and self.area == AREA.NPC_RNG_DROP
+        ):
             print(
                 "Warning: Difficulty != NPC_(EASY|MEDIUM|HARD) "
                 "but area = NPC_RNG_DROP"
             )
-        if self.diff in {LOC_DIF.NPC_EASY, LOC_DIF.NPC_MEDIUM, LOC_DIF.NPC_HARD} and self.area != AREA.NPC_RNG_DROP:
+        if (
+            self.diff in {LOC_DIF.NPC_EASY, LOC_DIF.NPC_MEDIUM, LOC_DIF.NPC_HARD}
+            and self.area != AREA.NPC_RNG_DROP
+        ):
             print(
                 "Warning: Difficulty = NPC_(EASY|MEDIUM|HARD) and area != NPC_RNG_DROP"
             )

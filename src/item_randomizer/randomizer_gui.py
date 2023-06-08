@@ -123,15 +123,6 @@ class PlaceholderState:
     placeholder_text: str
     with_placeholder: bool
 
-    __slots__ = (
-        "normal_color",
-        "normal_font",
-        "placeholder_text",
-        "placeholder_color",
-        "placeholder_font",
-        "with_placeholder",
-    )
-
 
 class DescriptionState:
     NORMAL = "normal"
@@ -258,7 +249,7 @@ class MainGUI:
         self.diff.trace("w", lambda name, index, mode: self.update())
         self.diff_rbutton1 = tk.Radiobutton(
             self.diff_frame,
-            text=rngopts.RandOptDifficulty.as_string(rngopts.RandOptDifficulty.EASY),
+            text=rngopts.RandOptDifficulty.EASY.description,
             variable=self.diff,
             value=rngopts.RandOptDifficulty.EASY,
             width=10,
@@ -266,7 +257,7 @@ class MainGUI:
         )
         self.diff_rbutton2 = tk.Radiobutton(
             self.diff_frame,
-            text=rngopts.RandOptDifficulty.as_string(rngopts.RandOptDifficulty.MEDIUM),
+            text=rngopts.RandOptDifficulty.MEDIUM.description,
             variable=self.diff,
             value=rngopts.RandOptDifficulty.MEDIUM,
             width=10,
@@ -274,7 +265,7 @@ class MainGUI:
         )
         self.diff_rbutton3 = tk.Radiobutton(
             self.diff_frame,
-            text=rngopts.RandOptDifficulty.as_string(rngopts.RandOptDifficulty.HARD),
+            text=rngopts.RandOptDifficulty.HARD.description,
             variable=self.diff,
             value=rngopts.RandOptDifficulty.HARD,
             width=10,
@@ -300,9 +291,7 @@ class MainGUI:
         self.key_diff.trace("w", lambda name, index, mode: self.update())
         self.key_diff_rbutton1 = tk.Radiobutton(
             self.key_diff_frame,
-            text=rngopts.RandOptKeyDifficulty.as_string(
-                rngopts.RandOptKeyDifficulty.LEAVE_ALONE
-            ),
+            text=rngopts.RandOptKeyDifficulty.LEAVE_ALONE.description,
             variable=self.key_diff,
             value=rngopts.RandOptKeyDifficulty.LEAVE_ALONE,
             width=10,
@@ -310,9 +299,7 @@ class MainGUI:
         )
         self.key_diff_rbutton2 = tk.Radiobutton(
             self.key_diff_frame,
-            text=rngopts.RandOptKeyDifficulty.as_string(
-                rngopts.RandOptKeyDifficulty.RANDOMIZE
-            ),
+            text=rngopts.RandOptKeyDifficulty.RANDOMIZE.description,
             variable=self.key_diff,
             value=rngopts.RandOptKeyDifficulty.RANDOMIZE,
             width=10,
@@ -320,9 +307,7 @@ class MainGUI:
         )
         self.key_diff_rbutton3 = tk.Radiobutton(
             self.key_diff_frame,
-            text=rngopts.RandOptKeyDifficulty.as_string(
-                rngopts.RandOptKeyDifficulty.RACE_MODE
-            ),
+            text=rngopts.RandOptKeyDifficulty.RACE_MODE.description,
             variable=self.key_diff,
             value=rngopts.RandOptKeyDifficulty.RACE_MODE,
             width=10,
@@ -330,9 +315,7 @@ class MainGUI:
         )
         self.key_diff_rbutton4 = tk.Radiobutton(
             self.key_diff_frame,
-            text=rngopts.RandOptKeyDifficulty.as_string(
-                rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE
-            ),
+            text=rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE.description,
             variable=self.key_diff,
             value=rngopts.RandOptKeyDifficulty.SPEEDRUN_MODE,
             width=10,
@@ -371,9 +354,7 @@ class MainGUI:
         self.soul_diff.trace("w", lambda name, index, mode: self.update())
         self.soul_diff_rbutton1 = tk.Radiobutton(
             self.soul_frame,
-            text=rngopts.RandOptSoulItemsDifficulty.as_string(
-                rngopts.RandOptSoulItemsDifficulty.SHUFFLE
-            ),
+            text=rngopts.RandOptSoulItemsDifficulty.SHUFFLE.description,
             variable=self.soul_diff,
             value=rngopts.RandOptSoulItemsDifficulty.SHUFFLE,
             width=10,
@@ -381,9 +362,7 @@ class MainGUI:
         )
         self.soul_diff_rbutton2 = tk.Radiobutton(
             self.soul_frame,
-            text=rngopts.RandOptSoulItemsDifficulty.as_string(
-                rngopts.RandOptSoulItemsDifficulty.CONSUMABLE
-            ),
+            text=rngopts.RandOptSoulItemsDifficulty.CONSUMABLE.description,
             variable=self.soul_diff,
             value=rngopts.RandOptSoulItemsDifficulty.CONSUMABLE,
             width=10,
@@ -391,9 +370,7 @@ class MainGUI:
         )
         self.soul_diff_rbutton3 = tk.Radiobutton(
             self.soul_frame,
-            text=rngopts.RandOptSoulItemsDifficulty.as_string(
-                rngopts.RandOptSoulItemsDifficulty.TRANSPOSE
-            ),
+            text=rngopts.RandOptSoulItemsDifficulty.TRANSPOSE.description,
             variable=self.soul_diff,
             value=rngopts.RandOptSoulItemsDifficulty.TRANSPOSE,
             width=10,
@@ -422,9 +399,7 @@ class MainGUI:
         self.start_items_diff.trace("w", lambda name, index, mode: self.update())
         self.start_items_rbutton1 = tk.Radiobutton(
             self.start_items_frame,
-            text=rngopts.RandOptStartItemsDifficulty.as_string(
-                rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H
-            ),
+            text=rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H.description,
             variable=self.start_items_diff,
             value=rngopts.RandOptStartItemsDifficulty.SHIELD_AND_1H,
             width=20,
@@ -432,9 +407,7 @@ class MainGUI:
         )
         self.start_items_rbutton2 = tk.Radiobutton(
             self.start_items_frame,
-            text=rngopts.RandOptStartItemsDifficulty.as_string(
-                rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H
-            ),
+            text=rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H.description,
             variable=self.start_items_diff,
             value=rngopts.RandOptStartItemsDifficulty.SHIELD_AND_2H,
             width=20,
@@ -442,9 +415,7 @@ class MainGUI:
         )
         self.start_items_rbutton3 = tk.Radiobutton(
             self.start_items_frame,
-            text=rngopts.RandOptStartItemsDifficulty.as_string(
-                rngopts.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H
-            ),
+            text=rngopts.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H.description,
             variable=self.start_items_diff,
             value=rngopts.RandOptStartItemsDifficulty.COMBINED_POOL_AND_2H,
             width=20,
