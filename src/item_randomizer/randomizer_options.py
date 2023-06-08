@@ -95,7 +95,7 @@ class RandomizerOptions:
     use_lord_souls: bool
     soul_items_diff: int
     start_items_diff: int
-    game_version: int
+    game_version: str
     randomize_npc_armor: bool
 
 
