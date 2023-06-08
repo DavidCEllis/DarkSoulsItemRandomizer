@@ -1,4 +1,5 @@
 import logging
+import random
 
 log = logging.getLogger(__name__)
 
@@ -16,8 +17,8 @@ import copy
 
 def make_difficulty_order_dict(
         rng_diff: rng_opt.RandOptDifficulty,
-        item_diff: item_s.ITEM_DIF
-):
+        item_diff: item_s.ITEM_DIF,
+) -> dict[int, list[loc_s.LOC_DIF]]:
     if item_diff == item_s.ITEM_DIF.SMALL_SOUL:
         item_diff = item_s.ITEM_DIF.EASY
     if item_diff == item_s.ITEM_DIF.KEY:
@@ -165,7 +166,11 @@ def make_difficulty_order_dict(
         return {}
 
 
-def eval_location_for_itemlotpart(table, loc_id, itemlotpart):
+def eval_location_for_itemlotpart(
+        table: item_t.ItemTable,
+        loc_id: int,
+        itemlotpart: item_s.ItemLotPart,
+):
     loc = table.location_dict[loc_id]
     if any(i in shop_s.DEFAULT_SHOP_DATA for i in [loc_id] + loc.linked_locations):
         # Shop locations cannot accept an item with a flag that is not shop-safe,
@@ -195,8 +200,12 @@ def eval_location_for_itemlotpart(table, loc_id, itemlotpart):
 #  empty locations have higher priority.
 #  So, the ordering is, lexicographically, current_size > difficulty_dict > randomness
 def create_random_placement_list(
-    table, difficulty_dict, itemlotpart_to_place, random_source, item_list
-):
+        table: item_t.ItemTable,
+        difficulty_dict: dict[int, list[loc_s.LOC_DIF]],
+        itemlotpart_to_place: item_s.ItemLotPart,
+        random_source: random.Random,
+        item_list: dict[int, item_s.ItemLotPart],
+) -> list[int]:
     log.debug("Creating random placement list.")
     return_list = []
     for diff_val in sorted(list(difficulty_dict.keys())):
@@ -220,7 +229,10 @@ def create_random_placement_list(
     return return_list
 
 
-def find_key_item_by_name(key_name, item_list):
+def find_key_item_by_name(
+        key_name: str,
+        item_list: dict[int, item_s.ItemLotPart],
+) -> None | item_s.ItemLotPart:
     if key_name not in (key_items_s.KEY_NAMES + key_items_s.ADDITIONAL_SPEEDRUN_KEYS):
         return None
     else:
@@ -236,7 +248,10 @@ def find_key_item_by_name(key_name, item_list):
             return key_item_list[0]
 
 
-def transmute_itemlotpart_to_upgrade(itemlotpart, random_source):
+def transmute_itemlotpart_to_upgrade(
+        itemlotpart: item_s.ItemLotPart,
+        random_source: random.Random,
+) -> item_s.ItemLotPart:
     (upgrade_id, upgrade_count) = random_source.choice(sorted(item_s.UPGRADES))
     itemlotpart.items = [
         item_s.ItemLotEntry(item_s.ITEM_TYPE.ITEM, upgrade_id, count=upgrade_count)
@@ -245,7 +260,10 @@ def transmute_itemlotpart_to_upgrade(itemlotpart, random_source):
     return itemlotpart
 
 
-def transmute_itemlotpart_to_rng_drop_upgrade(itemlotpart, random_source):
+def transmute_itemlotpart_to_rng_drop_upgrade(
+        itemlotpart: item_s.ItemLotPart,
+        random_source: random.Random,
+):
     (upgrade_common_id, upgrade_common_count) = random_source.choice(
         sorted(item_s.RANDOM_UPGRADE_COMMON)
     )
@@ -318,7 +336,10 @@ def transmute_itemlotpart_to_rng_drop_upgrade(itemlotpart, random_source):
     return itemlotpart
 
 
-def transmute_itemlotpart_to_consumable(itemlotpart, random_source):
+def transmute_itemlotpart_to_consumable(
+        itemlotpart: item_s.ItemLotPart,
+        random_source: random.Random,
+):
     (cons_type, cons_id, cons_count_min, cons_count_max) = random_source.choice(
         sorted(item_s.RANDOM_CONSUMABLES)
     )
@@ -336,7 +357,10 @@ def transmute_itemlotpart_to_consumable(itemlotpart, random_source):
     return itemlotpart
 
 
-def transmute_itemlotpart_to_boss_item(itemlotpart, random_source):
+def transmute_itemlotpart_to_boss_item(
+        itemlotpart: item_s.ItemLotPart,
+        random_source: random.Random,
+):
     if itemlotpart.items:
         for itemlotentry in itemlotpart.items:
             if (
@@ -364,7 +388,7 @@ def transmute_itemlotpart_to_boss_item(itemlotpart, random_source):
 
 def place_ignored_items(
         table: item_t.ItemTable,
-        item_list
+        item_list: dict[int, item_s.ItemLotPart],
 ):
     log.info("Placing ignored items.")
     for loc_id in table.location_dict:
@@ -385,8 +409,8 @@ def place_ignored_items(
 
 def place_upgrade_items(
         table: item_t.ItemTable,
-        random_source,
-        item_list
+        random_source: random.Random,
+        item_list: dict[int, item_s.ItemLotPart],
 ):
     log.info("Placing upgrade items.")
     for loc_id in table.location_dict:
@@ -407,9 +431,9 @@ def place_upgrade_items(
 
 def place_key_item_in_vanilla_location(
         table: item_t.ItemTable,
-        key_name,
+        key_name: str,
         current_key_locations,
-        item_list
+        item_list: dict[int, item_s.ItemLotPart],
 ):
     key_loc_ids = [
         loc_id
@@ -424,9 +448,9 @@ def place_key_item_in_vanilla_location(
 
 def place_key_items(
         table: item_t.ItemTable,
-        rand_options,
-        random_source,
-        item_list
+        rand_options: rng_opt.RandomizerOptions,
+        random_source: random.Random,
+        item_list: dict[int, item_s.ItemLotPart],
 ):
     log.info("Placing key items.")
     current_key_locations = {}
@@ -551,7 +575,7 @@ def place_key_items(
                 current_key_locations[key_name] = trial_key_locations[key_name]
                 loc = current_key_locations[key_name]
                 price_overwrite = get_price_for_difficulty(loc.diff, key, random_source)
-                if price_overwrite != None and loc.location_id in table.shop_dict:
+                if price_overwrite is not None and loc.location_id in table.shop_dict:
                     log.info(
                         "Placing "
                         + key_name
@@ -573,7 +597,11 @@ def place_key_items(
     table.key_locs = current_key_locations
 
 
-def get_price_for_difficulty(diff, itemlotpart, random_source):
+def get_price_for_difficulty(
+        diff: loc_s.LOC_DIF,
+        itemlotpart: item_s.ItemLotPart,
+        random_source: random.Random,
+):
     if diff not in shop_s.PRICE_DISTIBUTION:
         return None
     else:
@@ -592,9 +620,9 @@ def get_price_for_difficulty(diff, itemlotpart, random_source):
 
 def place_non_key_fixed_items(
         table: item_t.ItemTable,
-        rand_options,
-        random_source,
-        item_list
+        rand_options: rng_opt.RandomizerOptions,
+        random_source: random.Random,
+        item_list: dict[int, item_s.ItemLotPart],
 ):
     log.info("Placing non-key fixed items.")
     item_ids_to_place = [
@@ -725,7 +753,7 @@ def place_non_key_fixed_items(
 def place_starting_equipment(
         table: item_t.ItemTable,
         data_passed_from_chr_init,
-        item_list
+        item_list: dict[int, item_s.ItemLotPart],
 ):
     log.info("Placing starting equipment.")
     for start_class in loc_s.STARTING_ITEM_TABLE:
@@ -743,9 +771,9 @@ def place_starting_equipment(
 
 
 def build_table(
-        rand_options,
-        random_source,
-        chr_init_data=None,
+        rand_options: rng_opt.RandomizerOptions,
+        random_source: random.Random,
+        chr_init_data: list[cip.ChrInit] | None = None,
 ) -> tuple[item_t.ItemTable, cip.ChrInitParam]:
     # Create a deep copy of the list of items to be modified for this table.
     item_list = copy.deepcopy(item_s.ITEMS)
@@ -783,8 +811,7 @@ def build_table(
     return (table, given_cip)
 
 
-if __name__ == "__main__":
-    import random
+def main():
     import sys
 
     if len(sys.argv) < 2:
@@ -842,3 +869,7 @@ if __name__ == "__main__":
     # sys.stdout.write(ilp_binary_export)
     # sys.stdout.write(slp_binary_export)
     # sys.stdout.flush()
+
+
+if __name__ == "__main__":
+    main()

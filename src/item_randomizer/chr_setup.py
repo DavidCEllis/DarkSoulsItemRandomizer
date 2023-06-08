@@ -173,7 +173,7 @@ class ChrInitEntry:
         if self.body_scale is None:
             self.body_scale = ChrInitBodyScale()
 
-    def to_chr_init(self, chr_init_id, description):
+    def to_chr_init(self, chr_init_id: int, description: str) -> cip.ChrInit:
         return cip.ChrInit(
             chr_init_id,
             self.base_rec_mp,
