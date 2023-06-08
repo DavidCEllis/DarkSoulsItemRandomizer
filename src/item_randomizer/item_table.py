@@ -24,9 +24,7 @@ class ItemTable:
         for loc_id in location_dict:
             if location_dict[loc_id].location_id != loc_id:
                 raise ValueError(
-                    "Location at index "
-                    + str(loc_id)
-                    + " does not have matching location_id."
+                    f"Location at index {loc_id} does not have matching location_id."
                 )
             self.table[loc_id] = []
 
@@ -35,22 +33,18 @@ class ItemTable:
 
     def place_itemlotpart_at_location(self, itemlotpart, loc_id, item_list, price=None):
         log.info(
-            "Placing itemlotpart with first component ("
-            + str(itemlotpart.items[0].item_type)
-            + ", "
-            + str(itemlotpart.items[0].item_id)
-            + ", "
-            + str(itemlotpart.items[0].count)
-            + ") at location ID# "
-            + str(loc_id)
+            f"Placing itemlotpart with first component ("
+            f"{itemlotpart.items[0].item_type}, "
+            f"{itemlotpart.items[0].item_id}, "
+            f"{itemlotpart.items[0].count}) "
+            f"at location ID# {loc_id}"
         )
         if not self.has_room_at_location_for_itemlotpart(
             itemlotpart, loc_id, item_list
         ):
             raise ValueError(
-                "Location at index "
-                + str(loc_id)
-                + " cannot accept proposed itemlotpart due to size."
+                f"Location at index {loc_id} "
+                f"cannot accept proposed itemlotpart due to size."
             )
         else:
             self.table[loc_id] += [itemlotpart] + [
@@ -59,17 +53,12 @@ class ItemTable:
         if price is not None:
             for linkloc_id in [loc_id] + self.location_dict[loc_id].linked_locations:
                 if linkloc_id in self.shop_dict:
-                    log.info(
-                        "Setting price of location ID# "
-                        + str(linkloc_id)
-                        + " to "
-                        + str(price)
-                    )
+                    log.info(f"Setting price of location ID# {linkloc_id} to {price}")
                     self.shop_dict[linkloc_id].cost = price
 
     def has_room_at_location_for_itemlotpart(self, itemlotpart, loc_id, item_list):
         if loc_id not in self.table:
-            raise KeyError("ItemTable does not have location with ID " + str(loc_id))
+            raise KeyError(f"ItemTable does not have location with ID {loc_id}")
 
         max_size = self.location_dict[loc_id].max_size
         current_size = len(self.table[loc_id])
@@ -128,7 +117,7 @@ class ItemTable:
 
         change_made = False
         flag_usage_dict = self.build_flag_usage_dict(loc_id)
-        log.debug("flag_usage_dict: " + str(flag_usage_dict))
+        log.debug(f"flag_usage_dict: {flag_usage_dict}")
         sorted_flags = sorted(
             list(flag_usage_dict.keys()),
             key=lambda flag: flag_usage_dict[flag]["length"],
@@ -149,12 +138,9 @@ class ItemTable:
                     dominant_flag = flag2
                     recessive_flag = flag1
                 log.debug(
-                    "Replacing flag "
-                    + str(recessive_flag)
-                    + " with flag "
-                    + str(dominant_flag)
-                    + " at location ID# "
-                    + str(loc_id)
+                    f"Replacing flag {recessive_flag} "
+                    f"with flag {dominant_flag} "
+                    f"at location ID# {loc_id}"
                 )
                 for itemlotpart in self.table[loc_id]:
                     if itemlotpart.flag == recessive_flag:
@@ -174,10 +160,8 @@ class ItemTable:
         for flag in flag_usage_dict:
             if flag_usage_dict[flag]["length"] == 0:
                 log.info(
-                    "Adding dummy item at location ID# "
-                    + str(loc_id)
-                    + " to represent flag "
-                    + str(flag)
+                    f"Adding dummy item at location ID# {loc_id} "
+                    f"to represent flag {flag}"
                 )
                 dummy = item_s.ItemLotPart(
                     item_s.ITEM_DIF.EASY,
@@ -243,38 +227,34 @@ class ItemTable:
                 for item in self.table[loc_id]:
                     if item.flag in free_flags:
                         log.debug(
-                            "Discarding flag "
-                            + str(item.flag)
-                            + " from free_flags, since it is in use at location ID# "
-                            + str(loc_id)
+                            f"Discarding flag {item.flag} from free_flags, "
+                            f"since it is in use at location ID# {loc_id}"
                         )
                         free_flags.discard(item.flag)
                 for flag in used_flags:
                     if flag in free_flags:
                         log.debug(
-                            "Discarding flag "
-                            + str(flag)
-                            + " from free_flags, since it is in used_flags"
+                            f"Discarding flag {flag} "
+                            "from free_flags, since it is in used_flags"
                         )
                         free_flags.discard(flag)
 
                 # Deal with items that have a previously used flag, or have no flag.
                 for item in self.table[loc_id]:
                     if item.flag in used_flags or item.flag == -1:
-                        log.debug("Replacing already used flag " + str(item.flag) + ".")
+                        log.debug(f"Replacing already used flag {item.flag}.")
                         flag_to_replace = item.flag
                         # Get a new flag to replace this one.
                         if free_flags:
                             new_flag = free_flags.pop()
                             log.debug(
-                                "Popping flag " + str(new_flag) + " from free_flags."
+                                f"Popping flag {new_flag} from free_flags."
                             )
                         else:
                             new_flag = current_newly_created_flag
                             log.debug(
-                                "Creating new flag "
-                                + str(new_flag)
-                                + " since free_flags is empty."
+                                f"Creating new flag {new_flag} "
+                                f"since free_flags is empty."
                             )
                             current_newly_created_flag = current_newly_created_flag + 10
 
@@ -288,7 +268,7 @@ class ItemTable:
                                 if item_2.flag == flag_to_replace:
                                     item_2.flag = new_flag
 
-                log.info("Merging flags in location ID# " + str(loc_id))
+                log.info(f"Merging flags in location ID# {loc_id}")
                 # Merge flags to (roughly) minimize the number of item groups.
                 flags_before_merge = self.build_flag_usage_dict(loc_id)
                 self.merge_flags(loc_id)
@@ -297,11 +277,11 @@ class ItemTable:
                 # Sort flags, either freeing them for later use, or marking them as used.
                 for flag in flags_before_merge:
                     if flag in flags_after_merge:
-                        log.debug("Adding flag " + str(flag) + " to used_flags.")
+                        log.debug(f"Adding flag {flag} to used_flags.")
                         used_flags.add(flag)
                     else:
                         log.debug(
-                            "Pushing flag " + str(flag) + " back onto free_flags."
+                            f"Pushing flag {flag} back onto free_flags."
                         )
                         free_flags.add(flag)
 
@@ -337,11 +317,8 @@ class ItemTable:
             loc = self.location_dict[loc_id]
             itemlotparts = self.table[loc_id]
             log.info(
-                "Processing location ID# "
-                + str(loc_id)
-                + " holding "
-                + str(len(itemlotparts))
-                + " itemlotparts."
+                f"Processing location ID# {loc_id} "
+                f"holding {len(itemlotparts)} itemlotparts."
             )
             for itemlotpart in itemlotparts:
                 # Build item list for this itemlotpart.
@@ -390,10 +367,8 @@ class ItemTable:
                         for i in range(link_loc_id, link_loc_id + loc.max_size):
                             if not result.has_used_lot_id(i):
                                 log.debug(
-                                    "Placing ItemLot at index "
-                                    + str(i)
-                                    + " for location # "
-                                    + str(link_loc_id)
+                                    f"Placing ItemLot at index {i}"
+                                    f" for location # {link_loc_id}"
                                 )
                                 itemlot = ilp.ItemLot(
                                     i,
@@ -407,7 +382,7 @@ class ItemTable:
                                 result.item_lots.append(itemlot)
                                 break
                 log.debug(
-                    "ItemLotParam now has " + str(len(result.item_lots)) + " item lots."
+                    f"ItemLotParam now has {len(result.item_lots)} item lots."
                 )
         return result
 
@@ -446,10 +421,8 @@ class ItemTable:
                             ".",
                         )
                         log.debug(
-                            "Placing ShopLineup at index "
-                            + str(shop_data.shop_id)
-                            + " for location # "
-                            + str(link_loc_id)
+                            f"Placing ShopLineup at index {shop_data.shop_id} "
+                            f"for location # {link_loc_id}"
                         )
                         result.shop_lineups.append(lineup)
         return result
