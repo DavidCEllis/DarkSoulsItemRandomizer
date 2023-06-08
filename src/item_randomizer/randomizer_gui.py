@@ -580,7 +580,7 @@ class MainGUI:
             "end",
             "\n\n       Donations are not required, but are much appreciated. \`[T]/",
         )
-        self.msg_area.tag_config("hyperlink", foreground="blue", underline=1)
+        self.msg_area.tag_config("hyperlink", foreground="blue", underline=True)
         self.msg_area.tag_bind("hyperlink", "<Enter>", lambda _: self.hyperlink_enter())
         self.msg_area.tag_bind("hyperlink", "<Leave>", lambda _: self.hyperlink_leave())
         self.msg_area.tag_bind(
@@ -693,14 +693,14 @@ class MainGUI:
 
     def randomize_data(self, chr_init_data):
         options = rngopts.RandomizerOptions(
-            self.diff.get(),
+            rngopts.RandOptDifficulty(self.diff.get()),
             self.fashion_bool.get(),
-            self.key_diff.get(),
+            rngopts.RandOptKeyDifficulty(self.key_diff.get()),
             self.use_lordvessel.get(),
             self.use_lord_souls.get(),
-            self.soul_diff.get(),
-            self.start_items_diff.get(),
-            self.game_version.get(),
+            rngopts.RandOptSoulItemsDifficulty(self.soul_diff.get()),
+            rngopts.RandOptStartItemsDifficulty(self.start_items_diff.get()),
+            rngopts.RandOptGameVersion(self.game_version.get()),
             self.npc_armor_bool.get(),
         )
 
