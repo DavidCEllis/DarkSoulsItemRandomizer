@@ -14,7 +14,10 @@ from item_randomizer.binary_handlers import chr_init_param as cip
 import copy
 
 
-def make_difficulty_order_dict(rng_diff, item_diff):
+def make_difficulty_order_dict(
+        rng_diff: rng_opt.RandOptDifficulty,
+        item_diff: item_s.ITEM_DIF
+):
     if item_diff == item_s.ITEM_DIF.SMALL_SOUL:
         item_diff = item_s.ITEM_DIF.EASY
     if item_diff == item_s.ITEM_DIF.KEY:
